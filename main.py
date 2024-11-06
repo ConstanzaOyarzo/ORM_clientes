@@ -11,7 +11,7 @@ def main():
     db = next(get_session())
 
     # Intentar crear un cliente
-    cliente = ClienteCRUD.crear_cliente(db, "Carlos Pérez", "carlos@example.com")
+    cliente = ClienteCRUD.crear_cliente(db, "Carlos Pérez", "carlos@example.com", 25)
     if cliente:
         print(f"Cliente creado: {cliente.nombre} - {cliente.email}")
     else:

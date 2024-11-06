@@ -3,13 +3,13 @@ from models import Cliente
 
 class ClienteCRUD:
     @staticmethod
-    def crear_cliente(db: Session, nombre: str, email: str):
+    def crear_cliente(db: Session, nombre: str, email: str, edad:int):
         cliente_existente = db.query(Cliente).filter_by(email=email).first()
         if cliente_existente:
             print(f"El cliente con el email '{email}' ya existe.")
             return cliente_existente
 
-        cliente = Cliente(nombre=nombre, email=email)
+        cliente = Cliente(nombre=nombre, email=email, edad=edad)
         db.add(cliente)
         db.commit()
         db.refresh(cliente)
