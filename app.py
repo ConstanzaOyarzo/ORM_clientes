@@ -4,6 +4,8 @@ from database import get_session
 from crud.cliente_crud import ClienteCRUD
 from crud.pedido_crud import PedidoCRUD
 from database import get_session, engine, Base
+from datetime import datetime
+
 # Configuración de la ventana principal
 ctk.set_appearance_mode("System")  # Opciones: "System", "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Opciones: "blue", "green", "dark-blue"
@@ -115,10 +117,11 @@ class App(ctk.CTk):
         frame_inferior.pack(pady=10, padx=10, fill="both", expand=True)
 
         # Treeview para mostrar los pedidos
-        self.treeview_pedidos = ttk.Treeview(frame_inferior, columns=("ID", "Cliente Email", "Descripción"), show="headings")
+        self.treeview_pedidos = ttk.Treeview(frame_inferior, columns=("ID", "Cliente Email", "Descripción", "Fecha actual"), show="headings")
         self.treeview_pedidos.heading("ID", text="ID")
         self.treeview_pedidos.heading("Cliente Email", text="Cliente Email")
         self.treeview_pedidos.heading("Descripción", text="Descripción")
+        self.treeview_pedidos.heading("Fecha actual", text="Fecha actual")
         self.treeview_pedidos.pack(pady=10, padx=10, fill="both", expand=True)
 
         self.cargar_pedidos()
@@ -204,15 +207,16 @@ class App(ctk.CTk):
         self.treeview_pedidos.delete(*self.treeview_pedidos.get_children())
         pedidos = PedidoCRUD.leer_pedidos(db)
         for pedido in pedidos:
-            self.treeview_pedidos.insert("", "end", values=(pedido.id, pedido.cliente_email, pedido.descripcion))
+            self.treeview_pedidos.insert("", "end", values=(pedido.id, pedido.cliente_email, pedido.descripcion, pedido.fecha_actual))
         db.close()
 
     def crear_pedido(self):
         cliente_email = self.combobox_cliente_email.get()
         descripcion = self.entry_descripcion.get()
+        fecha_actual = datetime.now().date()
         if cliente_email and descripcion:
             db = next(get_session())
-            pedido = PedidoCRUD.crear_pedido(db, cliente_email, descripcion)
+            pedido = PedidoCRUD.crear_pedido(db, cliente_email, descripcion, fecha_actual)
             if pedido:
                 messagebox.showinfo("Éxito", "Pedido creado correctamente.")
                 self.cargar_pedidos()

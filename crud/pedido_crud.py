@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
 from models import Pedido, Cliente
+from datetime import datetime, date
 
 class PedidoCRUD:
 
     @staticmethod
-    def crear_pedido(db: Session, cliente_id: int, descripcion: str):
+    def crear_pedido(db: Session, cliente_id: int, descripcion: str, fecha_actual: date):
         cliente = db.query(Cliente).get(cliente_id)
         if cliente:
-            pedido = Pedido(descripcion=descripcion, cliente=cliente)
+            pedido = Pedido(descripcion=descripcion, cliente=cliente, fecha_actual=fecha_actual)
             db.add(pedido)
             db.commit()
             db.refresh(pedido)
